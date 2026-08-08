@@ -1,0 +1,593 @@
+{
+  "info": {
+    "_postman_id": "c469d43e-3e1e-4622-b7f7-9dfb1c8d03ec",
+    "name": "Demoqa",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29618133"
+  },
+  "item": [
+    {
+      "name": "Positve Test",
+      "item": [
+        {
+          "name": "Create User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"userID\", jsonData.userID);\r",
+                  "\r",
+                  "pm.test(\"status code is 201\", function() {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "\r",
+                  "});\r",
+                  "pm.test(\"Response time is less than 1000ms\", function(){\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"Content-Type is  application/json\", function(){\r",
+                  "        pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+                  "    });\r",
+                  "\r",
+                  "    const schema = {\r",
+                  "        \"type\": \"object\",\r",
+                  "        \"properties\": {\r",
+                  "            userID: {type : \"string\"},\r",
+                  "            username: {type: \"string\"},\r",
+                  "            books: {type: \"array\"}\r",
+                  "    },\r",
+                  "    required: [\"userID\", \"username\"]\r",
+                  "\r",
+                  "    };\r",
+                  "    pm.test(\"schema validation\", function(){\r",
+                  "        pm.response.to.have.jsonSchema(schema);\r",
+                  "    });\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const randNum = Math.floor(Math.random() * 1000000);\r",
+                  "const username = \"Suzan\" + randNum;\r",
+                  "\r",
+                  "pm.environment.set(\"username\", username);\r",
+                  "pm.environment.set(\"password\", \"Suzan@123\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userName\": \"{{username}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://demoqa.com/Account/v1/User",
+              "protocol": "https",
+              "host": [
+                "demoqa",
+                "com"
+              ],
+              "path": [
+                "Account",
+                "v1",
+                "User"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Token Generate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData = pm.response.json();\r",
+                  "pm.environment.set(\"token\", jsonData.token);\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "\r",
+                  "pm.test(\"Token is present in the response\", function () {\r",
+                  "    pm.expect(response.token).to.not.be.null;\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userName\": \"{{username}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://demoqa.com/Account/v1/GenerateToken",
+              "protocol": "https",
+              "host": [
+                "demoqa",
+                "com"
+              ],
+              "path": [
+                "Account",
+                "v1",
+                "GenerateToken"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch All Books",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "//Random ISBN Each Time",
+                  "let jsonData = pm.response.json();",
+                  "let randomBook = jsonData.books[Math.floor(Math.random() * jsonData.books.length)];",
+                  "pm.environment.set(\"isbn\", randomBook.isbn);",
+                  "console.log(\"selected Book\", randomBook.title); ",
+                  "console.log(\"ISBN\", randomBook.isbn); "
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://demoqa.com/BookStore/v1/Books",
+              "protocol": "https",
+              "host": [
+                "demoqa",
+                "com"
+              ],
+              "path": [
+                "BookStore",
+                "v1",
+                "Books"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Book",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Book added successfully\", function(){\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": \"{{userID}}\",\r\n  \"collectionOfIsbns\": [\r\n    {\r\n      \"isbn\": \"{{isbn}}\"\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://demoqa.com/BookStore/v1/Books",
+              "protocol": "https",
+              "host": [
+                "demoqa",
+                "com"
+              ],
+              "path": [
+                "BookStore",
+                "v1",
+                "Books"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Added Book list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "    });"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://demoqa.com/Account/v1/User/{{userID}}",
+              "protocol": "https",
+              "host": [
+                "demoqa",
+                "com"
+              ],
+              "path": [
+                "Account",
+                "v1",
+                "User",
+                "{{userID}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove book",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Book removal successfully\", function(){\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200,204]);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"isbn\": \"{{isbn}}\",\r\n    \"userId\": \"{{userID}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://demoqa.com/BookStore/v1/Book",
+              "protocol": "https",
+              "host": [
+                "demoqa",
+                "com"
+              ],
+              "path": [
+                "BookStore",
+                "v1",
+                "Book"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative Test",
+      "item": [
+        {
+          "name": "Exsisting User Create",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Duplicate user rejected\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 406]);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userName\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://demoqa.com/Account/v1/User",
+              "protocol": "https",
+              "host": [
+                "demoqa",
+                "com"
+              ],
+              "path": [
+                "Account",
+                "v1",
+                "User"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Login fails with wrong password\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "    pm.expect(json.status).to.eql(\"Failed\");\r",
+                  "    pm.expect(json.token).to.be.null;\r",
+                  "    pm.expect(json.result).to.eql(\"User authorization failed.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userName\": \"{{username}}\",\n    \"password\": \"Abcd123!\"\n}"
+            },
+            "url": {
+              "raw": "https://demoqa.com/Account/v1/GenerateToken",
+              "protocol": "https",
+              "host": [
+                "demoqa",
+                "com"
+              ],
+              "path": [
+                "Account",
+                "v1",
+                "GenerateToken"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Book Without Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Staus code is 401\", function(){\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response body contains 'User not authorized!'\", function(){\r",
+                  "    let json = pm.response.json();\r",
+                  "    pm.expect(json.message).to.eql(\"User not authorized!\");\r",
+                  "    });\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userID}}\",\n  \"collectionOfIsbns\": [\n    {\n      \"isbn\": \"{{isbn}}\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "https://demoqa.com/BookStore/v1/Books",
+              "protocol": "https",
+              "host": [
+                "demoqa",
+                "com"
+              ],
+              "path": [
+                "BookStore",
+                "v1",
+                "Books"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Non Existing Book",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Delete non-existing book should fail\", function(){\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400,404]);\r",
+                  "});\r",
+                  "\r",
+                  "let json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Error message returned\", function () {\r",
+                  "    pm.expect(json.message).to.not.be.empty;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"isbn\": \"{{isbn}}\",\r\n    \"userId\": \"{{userID}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://demoqa.com/BookStore/v1/Book",
+              "protocol": "https",
+              "host": [
+                "demoqa",
+                "com"
+              ],
+              "path": [
+                "BookStore",
+                "v1",
+                "Book"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "auth_secret_02dm",
+      "secret": true
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
